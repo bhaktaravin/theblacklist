@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "256384605236",
+    "project_id": "blacklist-9bdf6",
+    "storage_bucket": "blacklist-9bdf6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256384605236:android:6fd1c2bd925c34dcfbbe61",
+        "android_client_info": {
+          "package_name": "com.example.theblacklist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr9lqBHNwTeV_ysVEDsVhKUCKvCqYeO7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
