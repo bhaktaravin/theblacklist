@@ -1,85 +1,103 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Widget tests use Firebase core mocks and [FakeFirebaseFirestore] so the UI
+// can build without a device or emulator.
 
+import 'package:crimson_dossier/main.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_core_platform_interface/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:theblacklist/main.dart';
 
 void main() {
+  late FakeFirebaseFirestore fakeFirestore;
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    setupFirebaseCoreMocks();
+  });
+
+  setUp(() {
+    fakeFirestore = FakeFirebaseFirestore();
+  });
 
   group('MyApp Tests', () {
     testWidgets('App builds with correct theme', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp(firestore: fakeFirestore));
 
-      // Verify the app builds
       expect(find.byType(MaterialApp), findsOneWidget);
-      
-      // Verify dark theme is applied
+
       final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(materialApp.themeMode, equals(ThemeMode.dark));
-      expect(materialApp.title, equals('The Blacklist'));
+      expect(materialApp.title, equals('Crimson Dossier'));
     });
 
     testWidgets('Home page displays app title', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: MyHomePage(title: 'The Blacklist'),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MyHomePage(title: 'Crimson Dossier', firestore: fakeFirestore),
+        ),
+      );
 
-      // Verify the title appears in the AppBar
-      expect(find.text('The Blacklist'), findsOneWidget);
+      await tester.pump();
+
+      expect(find.text('Crimson Dossier'), findsOneWidget);
     });
 
     testWidgets('Search bar is visible', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: MyHomePage(title: 'The Blacklist'),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MyHomePage(title: 'Crimson Dossier', firestore: fakeFirestore),
+        ),
+      );
 
-      // Wait for the widget to build
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump();
 
-      // Verify search field exists
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('Search by name or number...'), findsOneWidget);
+      expect(find.text('Search by name or dossier number…'), findsOneWidget);
     });
 
     testWidgets('FloatingActionButton is present', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: MyHomePage(title: 'The Blacklist'),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MyHomePage(title: 'Crimson Dossier', firestore: fakeFirestore),
+        ),
+      );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump();
 
-      // Verify FAB exists
       expect(find.byType(FloatingActionButton), findsOneWidget);
     });
   });
 
   group('DetailPage Tests', () {
-    testWidgets('Detail page displays criminal information', (WidgetTester tester) async {
+    testWidgets('Detail page displays dossier information', (
+      WidgetTester tester,
+    ) async {
       final testData = {
         'number': 1,
-        'name': 'Raymond Reddington',
-        'description': 'Former US Naval Intelligence officer',
+        'name': 'Morgan Vale',
+        'description': 'Independent broker with ties to several ports.',
         'status': 'At Large',
         'threatLevel': 'Critical',
-        'episode': 'S1E1',
-        'alias': 'Red, Concierge of Crime',
-        'location': 'Washington DC',
+        'episode': 'Harbor district — week 3',
+        'alias': 'The broker, Night clerk',
+        'location': 'Midtown',
       };
 
-      await tester.pumpWidget(MaterialApp(
-        home: DetailPage(docId: 'test123', item: testData),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: DetailPage(docId: 'test123', item: testData),
+        ),
+      );
 
       await tester.pumpAndSettle();
 
-      // Verify criminal information is displayed
-      expect(find.text('Raymond Reddington'), findsOneWidget);
-      expect(find.text('Former US Naval Intelligence officer'), findsOneWidget);
+      expect(find.text('Morgan Vale'), findsOneWidget);
+      expect(
+        find.text('Independent broker with ties to several ports.'),
+        findsOneWidget,
+      );
       expect(find.text('At Large'), findsOneWidget);
       expect(find.text('Critical'), findsOneWidget);
     });
@@ -88,17 +106,29 @@ void main() {
   group('UI Component Tests', () {
     test('Threat level colors are correct', () {
       final state = _MyHomePageState();
-      
-      expect(state._getThreatLevelColor('Critical'), equals(Colors.red.shade900));
-      expect(state._getThreatLevelColor('High'), equals(Colors.orange.shade900));
-      expect(state._getThreatLevelColor('Medium'), equals(Colors.yellow.shade900));
+
+      expect(
+        state._getThreatLevelColor('Critical'),
+        equals(Colors.red.shade900),
+      );
+      expect(
+        state._getThreatLevelColor('High'),
+        equals(Colors.orange.shade900),
+      );
+      expect(
+        state._getThreatLevelColor('Medium'),
+        equals(Colors.yellow.shade900),
+      );
       expect(state._getThreatLevelColor('Low'), equals(Colors.green.shade900));
-      expect(state._getThreatLevelColor('Unknown'), equals(Colors.grey.shade800));
+      expect(
+        state._getThreatLevelColor('Unknown'),
+        equals(Colors.grey.shade800),
+      );
     });
   });
 }
 
-// Helper class to expose private methods for testing
+// Helper to mirror threat-level colors from [MyHomePage] for unit testing.
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) => Container();
@@ -118,4 +148,3 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 }
-

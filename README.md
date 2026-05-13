@@ -1,106 +1,28 @@
-# The Blacklist 🎯
+# Crimson Dossier
 
-A cross-platform mobile application inspired by the TV series "The Blacklist" for tracking and managing criminal profiles with enhanced features.
+A cross-platform Flutter app for tracking **original** case files: numbered dossiers, status, threat level, references, aliases, locations, and optional photos. Data is stored in **Firebase** (Firestore + Storage).
 
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+## Firestore
 
-## ✨ Features
+Documents live in the collection **`casefiles`** (see `kDossierCollection` in `lib/main.dart`). If you previously used another collection name, copy or migrate those documents in the [Firebase Console](https://console.firebase.google.com/) or with a one-time script.
 
-- **🔍 Real-time Search** - Search criminals by name or blacklist number
-- **📸 Photo Management** - Upload and display criminal mugshots with Firebase Storage
-- **📊 Threat Level System** - Visual color-coded threat indicators (Critical, High, Medium, Low)
-- **📍 Location Tracking** - Track last known locations
-- **👤 Detailed Profiles** - Comprehensive criminal profiles with aliases, descriptions, and episode references
-- **🔄 Status Management** - Track status (At Large, Captured, Deceased)
-- **🎨 Dark Theme UI** - Sleek, Material Design 3 dark interface
-- **⚡ Real-time Updates** - Live synchronization with Firebase Firestore
-- **🗑️ Swipe to Delete** - Intuitive gesture-based deletion with confirmation
-- **✏️ Edit Profiles** - Full CRUD operations on criminal records
+## Bundle IDs
 
-## 🛠️ Tech Stack
+Android and iOS **do not have to use the same string**; Firebase only requires each platform’s ID to match what you registered for that app.
 
-- **Flutter** - Cross-platform mobile framework
-- **Firebase Firestore** - NoSQL cloud database for real-time data
-- **Firebase Storage** - Cloud storage for images
-- **Image Picker** - Gallery integration for photo uploads
-- **Material Design 3** - Modern UI components
+- **Android** `applicationId` / Kotlin namespace: **`com.example.crimson_dossier`** (underscore — allowed in Firebase for your Android app).
+- **iOS** (and macOS host): **`com.example.crimsondossier`** (no underscore — matches what Firebase accepted when creating the iOS app). Test bundle: **`com.example.crimsondossier.RunnerTests`**.
 
-## 📱 Screenshots
+The Dart package name in `pubspec.yaml` remains **`crimson_dossier`**; that is only the Pub package name.
 
-> Add your app screenshots here
+Keep **`android/app/google-services.json`** aligned with the **Android** package above, and **`ios/Runner/GoogleService-Info.plist`** with the **iOS** bundle above (re-download from Firebase if you change either). Run **`flutterfire configure`** so **`lib/firebase_options.dart`** lists the correct options per platform.
 
-## 🚀 Getting Started
+## Getting started
 
-### Prerequisites
-
-- Flutter SDK (^3.10.1)
-- Firebase account and project setup
-- Android Studio / Xcode for platform-specific builds
-
-### Installation
-
-1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/theblacklist.git
-cd theblacklist
-```
-
-2. Install dependencies
-```bash
+cd E:\Code\theblacklist   # or your clone path
 flutter pub get
-```
-
-3. Configure Firebase
-   - Add your `google-services.json` to `android/app/`
-   - Add your `GoogleService-Info.plist` to `ios/Runner/`
-   - Update `firebase_options.dart` with your Firebase config
-
-4. Run the app
-```bash
 flutter run
 ```
 
-## 📦 Dependencies
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  firebase_core: ^3.10.0
-  cloud_firestore: ^5.6.12
-  firebase_storage: ^12.3.8
-  image_picker: ^1.0.7
-```
-
-## 🏗️ Project Structure
-
-```
-lib/
-  ├── main.dart              # Main app entry point
-  ├── firebase_options.dart  # Firebase configuration
-  └── (features organized by functionality)
-```
-
-## 🎯 Future Enhancements
-
-- Filter by threat level and status
-- Grid view option
-- Statistics dashboard
-- Export to PDF
-- Offline mode with sync
-- Map integration for locations
-- Multi-user collaboration
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👨‍💻 Developer
-
-Built with ❤️ using Flutter
-
----
-
-⭐ Star this repo if you find it useful!
+Configure `lib/firebase_options.dart` and platform Firebase config files using [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) if this is a fresh checkout.
